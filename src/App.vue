@@ -8,29 +8,58 @@
     <header>
       <h1>The<strong>Anime</strong>Database</h1>
 
-      <form class="search-box">
+      <form class="search-box" @submit.prevent="HandleSearch">
         <input
           type="search"
           class="search-field"
           placeholder="Search for an anime..."
           required
+          v-model="searchQuery"
         />
       </form>
     </header>
-    <main>
+    <h3 v-if="prevSearch">
+      Showing results for <strong>{{ prevSearch }}</strong>
+    </h3>
+    <main v-if="animeList.length > 0 || !prevSearch">
       <div class="cards">
-        <Card />
+        <Card v-for="anime in animeList" :key="anime.mal_id" :anime="anime" />
       </div>
     </main>
+    <h3 v-else>
+      No results for <strong>{{ prevSearch }}</strong>
+    </h3>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import Card from './components/Card.vue'
 
 export default defineComponent({
   name: 'App',
+  setup() {
+    const searchQuery = ref('')
+    const prevSearch = ref('')
+    const animeList = ref([])
+
+    const HandleSearch = async () => {
+      animeList.value = await fetch(
+        `https://api.jikan.moe/v3/search/anime?q=${searchQuery.value}`
+      )
+        .then((res) => res.json())
+        .then((data) => data.results)
+      prevSearch.value = searchQuery.value
+      searchQuery.value = ''
+    }
+    return {
+      Card,
+      searchQuery,
+      animeList,
+      prevSearch,
+      HandleSearch
+    }
+  },
   components: {
     Card
   }
@@ -108,6 +137,15 @@ header {
         box-shadow: 0px 0px 0px;
       }
     }
+  }
+}
+
+h3 {
+  padding-left: 3rem;
+  font-weight: 300;
+  // color: black;
+  strong {
+    color: #0070f3;
   }
 }
 

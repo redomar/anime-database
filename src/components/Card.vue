@@ -1,23 +1,33 @@
 <template>
   <div class="card">
-    <a href="#" target="_blank" rel="noopener noreferrer">
-      <img src="https://placehold.it/150x250" alt="Anime Poster" />
-      <h3>Sample</h3>
+    <a :href="anime.url" target="_blank" rel="noopener noreferrer">
+      <img :src="anime.image_url" :alt="anime.title + ' Poster'" />
+      <h3>{{ anime.title }}</h3>
     </a>
   </div>
 </template>
 
+<script lang="ts">
+import { defineComponent } from 'vue'
+export default defineComponent({
+  name: 'Card',
+  props: ['anime']
+})
+</script>
+
 <style lang="scss" scoped>
 .card {
   flex: 1 1 33;
-  width: 33%;
-  max-width: 33%;
+  width: 13rem;
+  margin: 0 auto;
+  // min-width: 11%;
+  // max-width: 23%;
   padding: 0px 0.5rem;
   margin-bottom: 1rem;
 
   img {
-    // width: 100%;
-    height: 300px;
+    width: 100%;
+    // height: 300px;
     object-fit: cover;
     border-radius: 0.5rem;
     box-shadow: 0px 4px 8px rgba($color: #0070f3, $alpha: 0.15);
